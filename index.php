@@ -14,6 +14,8 @@ $stmt->execute();
 $services = $stmt->get_result();
 
 ?>
+
+
 <main>
     <!--Présentation de l'entreprise-->
     <section class="py-5">

@@ -55,7 +55,7 @@ Un filtre est également disponible.
 Après s'être connecté au panneau admin, il sera possible uniquement pour l'administrateur en cliquant sur l'onglet "utilisateurs", d'ajouter un nouveau compte pour l'un de ses employés. 
 Un filtre est également disponible.
 
-- Fonctionnalité 7 : gestion des services 
+- Fonctionnalité 7 : gestion des horaires 
 
 Après s'être connecté au panneau admin, il sera possible uniquement pour l'administrateur en cliquant sur l'onglet "horaires", d'ajouter ou de modifier les horaires du garage qui s'affichent directement dans le footer du site en bas à gauche. 
 
