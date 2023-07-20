@@ -31,7 +31,7 @@ $utilisateurs = $stmt->get_result();
 ?>
 <main>
     <div class="container-lg">
-</br>
+        </br>
         <h1>Gestion des utilisateurs</h1>
         <div class="container-lg" style="margin-top: 50px;">
 
@@ -97,6 +97,7 @@ $utilisateurs = $stmt->get_result();
                             class="fa fa-arrow-right"></i></a>
             </div>
         </div>
+    </div>
 </main>
 
 <div class="modal fade" id="addModal" role="dialog" aria-labelledby="AjouterUtilisateur">

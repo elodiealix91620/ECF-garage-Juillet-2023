@@ -4,14 +4,14 @@ Description : L'objectif de ce projet est de proposer une application web vitrin
 
 ## Installation
 
-1. Clonez ce dépôt de code sur votre machine locale.
-2. Exécutez la commande `npm install` pour installer les dépendances.
-3. Configurez les fichiers de configuration selon vos besoins.
+1. Créer une base de données "elodie"
+2. Lancer le script sql "BDD.sql"
+
 
 ## Utilisation
 
-1. Exécutez la commande `npm start` pour démarrer l'application.
-2. Accédez à l'URL `http://localhost:3000` dans votre navigateur.
+1. Utilisateur admin par défaut : elodie@elodie.fr et mot de passe : 123
+2. Aller dans le portail admin, créer un nouveau compte utilisateur admin et supprimer l'ancien 
 
 ## Fonctionnalités 
 

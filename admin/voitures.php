@@ -7,92 +7,128 @@ if (!isset($_SESSION["estAdmin"])) {
     echo "401 Unauthorized";
     exit;
 }
-
 $page = isset($_GET["page"]) ? intval($_GET["page"]) : 1;
-$trie = isset($_GET["trie"]) ? $_GET["trie"] : null;
 
-$connexion = new mysqli ("localhost", "root", "root", "elodie");
-
-$requete = 'SELECT * FROM `vehiculesoccasion`';
-
-if ($trie != null) {
-    $requete .= "ORDER BY " . mysqli_real_escape_string($connexion, $trie);
-}
-
-$requete .= " LIMIT 15 OFFSET ?";
-$offset = 15 * ($page - 1);
-
-$stmt = $connexion->prepare($requete);
-$stmt->bind_param("i", $offset);
-
-$stmt->execute();
-$voitures = $stmt->get_result();
+$marque = isset($_GET["marque"]) ? $_GET["marque"] : null;
+$prixMax = isset($_GET["prixMax"]) ? $_GET["prixMax"] : null;
+$prixMin = isset($_GET["prixMin"]) ? $_GET["prixMin"] : null;
+$anneeMax = isset($_GET["anneeMax"]) ? $_GET["anneeMax"] : null;
+$anneeMin = isset($_GET["anneeMin"]) ? $_GET["anneeMin"] : null;
+$kmMax = isset($_GET["kmMax"]) ? $_GET["kmMax"] : null;
+$kmMin = isset($_GET["kmMin"]) ? $_GET["kmMin"] : null;
 
 ?>
+
+<script>
+    var page = <?php echo $page ?>;
+
+    function onLoadFunctions() {
+        getVoiture();
+    }
+
+    function getVoiture(query) {
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("txtHint").innerHTML = this.responseText;
+            }
+        };
+        xmlhttp.withCredentials = true;
+        xmlhttp.open("GET", "voitures_liste.php?page=" + page + "&" + query, true);
+        xmlhttp.send();
+    }
+
+    function filter() {
+        const formData = new FormData((document.getElementById('formFilter')));
+        const queryString = new URLSearchParams(formData).toString();
+        getVoiture(queryString);
+    }
+
+    function pageSuivante() {
+        page += 1;
+        filter();
+    }
+
+    function pagePrecedente() {
+        page = page == 1 ? page : page - 1;
+        filter();
+    }
+
+    window.onload = onLoadFunctions;
+</script>
+
 <main>
     <div class="container-lg">
-
-</br>
+        </br>
         <h1>Gestion des voitures</h1>
         <div class="container-lg" style="margin-top: 50px;">
 
-            <a class="btn btn-secondary" type="submit" data-toggle="modal" data-target="#addModal">Ajouter une voiture</a>
+            <a class="btn btn-secondary" type="submit" data-toggle="modal" data-target="#addModal">Ajouter une
+                voiture</a>
             <!--Filtre pour les véhicules-->
-            <div class="filter">
-                <form action="voitures.php" method="get">
-                    <label for="category">Trier par :</label>
-                    <select id="category" name="trie">
-                        <option value="">Tout</option>
-                        <option <?php echo (isset($_GET["trie"]) && $_GET["trie"] == "Annee") ? "selected" : "";?> value="Annee">Année Croissante</option>
-                        <option <?php echo (isset($_GET["trie"]) && $_GET["trie"] == "Annee DESC") ? "selected" : "";?> value="Annee DESC">Année Décroissante</option>
-                        <option <?php echo (isset($_GET["trie"]) && $_GET["trie"] == "Km") ? "selected" : "";?> value="Km">Km Croissant</option>
-                        <option <?php echo (isset($_GET["trie"]) && $_GET["trie"] == "Km DESC") ? "selected" : "";?> value="Km DESC">Km Décroissant</option>
-                        <option <?php echo (isset($_GET["trie"]) && $_GET["trie"] == "Prix") ? "selected" : "";?> value="Prix">Prix Croissant</option>
-                        <option <?php echo (isset($_GET["trie"]) && $_GET["trie"] == "Prix DESC") ? "selected" : "";?> value="Prix DESC">Prix Décroissant</option>
-                    </select>
-                    <button class="btn btn-primary">Trier</button>
-                </form>
+            <div class="container-lg">
+                <div class="row">
+                    <form id="formFilter" action="#" method="get">
+                        <div class="row">
+                        <div class="form-group col-md-3 col-sm-6">
+                                <label for="anneeMin">Année:</label>
+                                <input type="number" class="form-control" id="anneeMin" name="anneeMin"
+                                       placeholder="Min"
+                                       value="<?php echo $anneeMin ?>">
+                                <input type="number" class="form-control" id="anneeMax" name="anneeMax"
+                                       placeholder="Max"
+                                       value="<?php echo $anneeMax ?>">
+                            </div>
 
+                            <div class="form-group col-md-3  col-sm-6">
+                                <label for="prixMin">Prix:</label>
+                                <input type="number" class="form-control" id="prixMin" name="prixMin" placeholder="Min"
+                                       value="<?php echo $prixMin ?>">
+                                <input type="number" class="form-control" id="prixMax" name="prixMax" placeholder="Max"
+                                       value="<?php echo $prixMax ?>">
+                            </div>
+
+                            <div class="form-group col-md-3  col-sm-6">
+                                <label for="kilometreMin">Kilometrage:</label>
+                                <input type="number" class="form-control" id="kmMin" name="kmMin" placeholder="Min"
+                                       value="<?php echo $kmMin ?>">
+                                <input type="number" class="form-control" id="kmMax" name="kmMax" placeholder="Max"
+                                       value="<?php echo $kmMax ?>">
+                            </div>
+
+                            <div class="form-group col-md-3 col-sm-6">
+                                <label for="marque">Marque:</label>
+                                <input type="text" class="form-control" id="marque" name="marque"
+                                       value="<?php echo $marque ?>">
+                            </div>
+
+                        </div>
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-md-3 offset-md-9">
+                                <button class="btn btn-secondary" type="button" onclick="filter()"><i
+                                            class="fa fa-filter"></i> Filtrer
+                            </div>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Marque</th>
-                    <th scope="col">Modèle</th>
-                    <th scope="col">Prix</th>
-                    <th scope="col">Année</th>
-                    <th scope="col">Kilométrage</th>
-                    <th scope="col">Statut</th>
-                    <th scope="col">Option</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                <?php
-                while ($voiture = $voitures->fetch_array()) {
-                    ?>
-                    <tr>
-                        <td><?php echo $voiture["Marque"] ?></td>
-                        <td><?php echo $voiture["Modele"] ?></td>
-                        <td><?php echo $voiture["Prix"] ?></td>
-                        <td><?php echo $voiture["Annee"] ?></td>
-                        <td><?php echo $voiture["Km"] ?></td>
-                        <td><?php echo $voiture["Statut"] ?></td>
-                        <td><a class="btn btn-primary"
-                               href="voiture.php?id=<?php echo $voiture["Id"]; ?>">Voir</i></a></td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-            </table>
+            <div id="txtHint"><b>Chargement</b></div>
 
             <div class="text-center container-lg">
-                <a href="?<?php echo $page == 1 ? $_SERVER['QUERY_STRING']."&page=".$page : $_SERVER['QUERY_STRING']."&page=".$page - 1; ?>"><i class="fa fa-arrow-left"></i> Page Précédente</a>
-                /
-                <a href="?<?php echo $_SERVER['QUERY_STRING']."&page=".($page + 1); ?>">Page Suivante <i class="fa fa-arrow-right"></i></a>
+                <div class="text-center container-lg">
+                    <bouton class="btn btn-secondary"
+                            onclick="pagePrecedente()"><i
+                                class="fa fa-arrow-left"></i> Page Précedente
+                    </bouton>
+                    /
+                    <bouton class="btn btn-secondary" onclick="pageSuivante()">Page Suivante <i
+                                class="fa fa-arrow-right"></i></bouton>
+                </div>
             </div>
         </div>
+    </div>
 </main>
 
 <div class="modal fade" id="addModal" role="dialog" aria-labelledby="AjouterVoiture">
